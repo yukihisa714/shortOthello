@@ -3,12 +3,14 @@ for (i = 8; i--;) L[i] = Array(8).fill(0);
 L[3][4] = L[4][3] = 1;
 L[3][3] = L[4][4] = 2;
 
-console.log(L);
+t = t => console.log(t)
+
+t(L);
 
 pl1 = 1;
 pl2 = 2;
 
-change = () => {
+change = z => {
     a = pl1;
     pl1 = pl2;
     pl2 = a
@@ -16,9 +18,8 @@ change = () => {
 
 check = (x, y) => {
     p = 0;
-    mL = [];
-    for (i = 3; i--;) mL[i] = Array(3).fill(0);
-    if (L[y][x] == 0) {
+    mL = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    if (!L[y][x]) {
         for (py = -1; py < 2; py++) {
             for (px = -1; px < 2; px++) {
                 ax = px;
@@ -31,64 +32,61 @@ check = (x, y) => {
                 }
                 if (i && L[y + ay][x + ax] == pl1) {
                     mL[py + 1][px + 1] = 1;
-                    p = 1;
+                    p = 1
                 }
             }
         }
     }
-    return { p, mL };
+    return { p, mL }
 }
 
-checkAll = () => {
-    for (a = 64; a--;) {
-        if (check(a % 8, a / 8 | 0).p) return 1
-    }
+checkAll = z => {
+    for (a = 64; a--;) if (check(a % 8, a / 8 | 0).p) return 1;
     return 0
 }
 
 put = (x, y) => {
-    // console.log(pl1, pl2);
-    if (L[y][x] == 0) {
+    if (!L[y][x]) {
         flg = 0;
         p = check(x, y);
-        // console.log(p);
         for (py = -1; py < 2; py++) {
             for (px = -1; px < 2; px++) {
                 if (p.mL[py + 1][px + 1]) {
                     i = 1;
                     while (L[y + py * i][x + px * i] == pl2) {
                         L[y + py * i][x + px * i] = pl1;
-                        i++;
+                        i++
                     }
-                    flg = 1;
+                    flg = 1
                 }
             }
         }
+        q = 1;
         d = [0, 0, 0];
-        for (i = 64; i--;) d[L[i / 8 | 0][i % 8]]++;
-        // console.log(d);
-        e = 1;
-        for (i of d) e *= i
-        if (!e) {
-            if (d[1] < d[2]) console.log(`${2}の勝ち`)
-            else if (d[1] > d[2]) console.log(`${1}の勝ち`)
-            else console.log("ドロー")
+        for (i = 64; i--;) {
+            l = L[i / 8 | 0][i % 8];
+            d[l]++;
+            q *= l;
         }
-        else {
+        e = 1;
+        for (i of d) e *= i;
+        if (e) {
             if (flg) {
                 L[y][x] = pl1;
                 change();
                 if (!checkAll()) {
-                    console.log("パス");
-                    change();
+                    t("パス");
+                    change()
                 }
             }
-            console.log(L);
-            p = 1;
-            for (i = 64; i--;) p *= L[i / 8 | 0][i % 8]
-            if (p) console.log("終了");
-            else console.log(`${pl1}のターン`);
+            t(L);
+            q ? t("終了") : t(`${pl1}のターン`)
+        }
+        else {
+            if (d[1] < d[2]) t(`${2}の勝ち`);
+            else if (d[1] > d[2]) t(`${1}の勝ち`);
+            else t("ドロー")
         }
     }
-    else console.log("置けません")
+    else t("置けません")
 }
