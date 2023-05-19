@@ -47,7 +47,7 @@ checkAll = () => {
 }
 
 put = (x, y) => {
-    console.log(pl1, pl2);
+    // console.log(pl1, pl2);
     if (L[y][x] == 0) {
         flg = 0;
         p = check(x, y);
@@ -66,7 +66,7 @@ put = (x, y) => {
         }
         d = [0, 0, 0];
         for (i = 64; i--;) d[L[i / 8 | 0][i % 8]]++;
-        console.log(d);
+        // console.log(d);
         e = 1;
         for (i of d) e *= i
         if (!e) {
