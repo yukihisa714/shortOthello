@@ -16,7 +16,9 @@ s = z => {
     pl2 = a
 }
 
-check = (x, y) => {
+o = z => t("置けません");
+
+c = (x, y) => {
     p = 0;
     mL = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
     if (!L[y][x]) {
@@ -31,28 +33,25 @@ check = (x, y) => {
                 ay += py;
                 i = 1
             }
-            if (i && L[ay] && L[ay][ax] == pl1) {
-                mL[py + 1][px + 1] = 1;
-                p = 1
-            }
+            if (i && L[ay] && L[ay][ax] == pl1) mL[py + 1][px + 1] = p = 1
         }
     }
     return { p, mL }
 }
 
 put = (x, y) => {
-    if (!L[y][x]) {
-        flg = 0;
-        p = check(x, y);
+    if (L[y][x]) o();
+    else {
+        p = c(x, y);
         // 置けることが確認できたとき
         if (p.p) {
             for (j = 9; j--;) {
                 px = j % 3 - 1;
                 py = (j / 3 | 0) - 1;
                 if (p.mL[py + 1][px + 1]) {
-                    flg = 1
+                    f = 1;
                     L[y][x] = pl1;
-                    while (L[ay = y + py * flg][ax = x + px * flg] == pl2) L[ay][ax] = pl1, flg++
+                    while (L[ay = y + py * f][ax = x + px * f] == pl2) L[ay][ax] = pl1, f++
                 }
             }
             d = [0, 0, 0];
@@ -63,17 +62,13 @@ put = (x, y) => {
             if (d[0] * d[1] * d[2]) {
                 s();
                 p = 0;
-                for (a = 64; a--;) p += check(a % 8, a / 8 | 0).p;
+                for (a = 64; a--;) p += c(a % 8, a / 8 | 0).p;
                 if (!p) t("パス"), s();
                 t(`${pl1}のターン`)
             }
-            else {
-                if (d[1] == d[2]) t("ドロー");
-                else t(`${d.indexOf(Math.max(d[1], d[2]))}の勝ち`)
-            }
+            else d[1] == d[2] ? t("ドロー") : t(`${d.indexOf(Math.max(d[1], d[2]))}の勝ち`)
         }
-        else t("置けません")
+        else o()
     }
-    else t("置けません");
     t(L.join("\n"))
 }
