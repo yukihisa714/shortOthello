@@ -27,16 +27,15 @@ c = (x, y) => {
             py = (j / 3 | 0) - 1;
             ax = x + px;
             ay = y + py;
-            i = 0;
             while (L[ay] && L[ay][ax] == pl2) {
                 ax += px;
                 ay += py;
-                i = 1
+                if (L[ay] && L[ay][ax] == pl1) mL[py + 1][px + 1] = p = 1
             }
-            if (i && L[ay] && L[ay][ax] == pl1) mL[py + 1][px + 1] = p = 1
         }
     }
-    return { p, mL }
+    mL[3] = p;
+    return mL
 }
 
 put = (x, y) => {
@@ -44,14 +43,13 @@ put = (x, y) => {
     else {
         p = c(x, y);
         // 置けることが確認できたとき
-        if (p.p) {
+        if (p[3]) {
             for (j = 9; j--;) {
-                px = j % 3 - 1;
-                py = (j / 3 | 0) - 1;
-                if (p.mL[py + 1][px + 1]) {
+                if (p[py = j / 3 | 0][px = j % 3]) {
                     f = 1;
                     L[y][x] = pl1;
-                    while (L[ay = y + py * f][ax = x + px * f] == pl2) L[ay][ax] = pl1, f++
+                    // y + (py - 1) * f  =>  y + py * f - f
+                    while (L[ay = y + py * f - f][ax = x + px * f - f] == pl2) L[ay][ax] = pl1, f++
                 }
             }
             d = [0, 0, 0];
@@ -62,11 +60,11 @@ put = (x, y) => {
             if (d[0] * d[1] * d[2]) {
                 s();
                 p = 0;
-                for (a = 64; a--;) p += c(a % 8, a / 8 | 0).p;
+                for (a = 64; a--;) p += c(a % 8, a / 8 | 0)[3];
                 if (!p) t("パス"), s();
-                t(`${pl1}のターン`)
+                t(pl1 + "のターン")
             }
-            else d[1] == d[2] ? t("ドロー") : t(`${d.indexOf(Math.max(d[1], d[2]))}の勝ち`)
+            else d[1] == d[2] ? t("ドロー") : t(d.indexOf(Math.max(d[1], d[2])) + "の勝ち")
         }
         else o()
     }
