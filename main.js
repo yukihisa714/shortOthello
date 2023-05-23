@@ -3,39 +3,37 @@ for (i = 8; i--;) L[i] = Array(8).fill(0);
 L[3][4] = L[4][3] = 1;
 L[3][3] = L[4][4] = 2;
 
-t = t => console.log(t)
+t = t => console.log(t);
 
 t(L);
 
-pl1 = 1;
-pl2 = 2;
+F = 1;
+S = 2;
 
 s = z => {
-    a = pl1;
-    pl1 = pl2;
-    pl2 = a
+    a = F;
+    F = S;
+    S = a
 }
 
 o = z => t("置けません");
 
 c = (x, y) => {
-    p = 0;
-    mL = [[0, 0, 0], [0, 0, 0], [0, 0, 0]];
+    l = [[0, 0, 0], [0, 0, 0], [0, 0, 0], 0];
     if (!L[y][x]) {
         for (j = 9; j--;) {
-            px = j % 3 - 1;
-            py = (j / 3 | 0) - 1;
-            ax = x + px;
-            ay = y + py;
-            while (L[ay] && L[ay][ax] == pl2) {
-                ax += px;
-                ay += py;
-                if (L[ay] && L[ay][ax] == pl1) mL[py + 1][px + 1] = p = 1
+            p = j % 3 - 1;
+            q = (j / 3 | 0) - 1;
+            ax = x + p;
+            ay = y + q;
+            while (L[ay] && L[ay][ax] == S) {
+                ax += p;
+                ay += q;
+                if (L[ay] && L[ay][ax] == F) l[q + 1][p + 1] = l[3] = 1
             }
         }
     }
-    mL[3] = p;
-    return mL
+    return l
 }
 
 put = (x, y) => {
@@ -47,14 +45,14 @@ put = (x, y) => {
             for (j = 9; j--;) {
                 if (p[py = j / 3 | 0][px = j % 3]) {
                     f = 1;
-                    L[y][x] = pl1;
+                    L[y][x] = F;
                     // y + (py - 1) * f  =>  y + py * f - f
-                    while (L[ay = y + py * f - f][ax = x + px * f - f] == pl2) L[ay][ax] = pl1, f++
+                    while (L[ay = y + py * f - f][ax = x + px * f - f] == S) L[ay][ax] = F, f++
                 }
             }
             d = [0, 0, 0];
             // 0,1,2を数える
-            for (i = 64; i--;) d[L[i / 8 | 0][i % 8]]++;
+            for (i of L) for (j of i) d[j]++;
             t(d);
             // 0,1,2のいずれも0でないとき
             if (d[0] * d[1] * d[2]) {
@@ -62,9 +60,9 @@ put = (x, y) => {
                 p = 0;
                 for (a = 64; a--;) p += c(a % 8, a / 8 | 0)[3];
                 if (!p) t("パス"), s();
-                t(pl1 + "のターン")
+                t(F + "のターン")
             }
-            else d[1] == d[2] ? t("ドロー") : t(d.indexOf(Math.max(d[1], d[2])) + "の勝ち")
+            else d[1] == d[2] ? t("ドロー") : t((d[1] > d[2] ? 1 : 2) + "の勝ち")
         }
         else o()
     }
