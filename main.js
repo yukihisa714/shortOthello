@@ -26,11 +26,7 @@ c = (x, y) => {
             q = (j / 3 | 0) - 1;
             ax = x + p;
             ay = y + q;
-            while (L[ay] && L[ay][ax] == S) {
-                ax += p;
-                ay += q;
-                if (L[ay] && L[ay][ax] == F) l[q + 1][p + 1] = l[3] = 1
-            }
+            while (L[ay] && L[ay][ax] == S) if (L[ay += q] && L[ay][ax += p] == F) l[q + 1][p + 1] = l[3] = 1
         }
     }
     return l
@@ -43,13 +39,11 @@ put = (x, y) => {
         // 置けることが確認できたとき
         if (p[3]) {
             for (j = 9; j--;) {
-                if (p[py = j / 3 | 0][px = j % 3]) {
-                    f = 1;
-                    L[y][x] = F;
-                    // y + (py - 1) * f  =>  y + py * f - f
-                    while (L[ay = y + py * f - f][ax = x + px * f - f] == S) L[ay][ax] = F, f++
-                }
+                f = 1;
+                // y + (py - 1) * f  =>  y + py * f - f
+                if (p[py = j / 3 | 0][px = j % 3]) while (L[ay = y + py * f - f][ax = x + px * f - f] == S) L[ay][ax] = F, f++
             }
+            L[y][x] = F;
             d = [0, 0, 0];
             // 0,1,2を数える
             for (i of L) for (j of i) d[j]++;
